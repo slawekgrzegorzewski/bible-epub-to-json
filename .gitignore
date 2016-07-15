@@ -1,0 +1,7 @@
+.gradle/
+.idea/
+bible_epub_to_json.iml
+build/
+gradle/
+gradlew
+gradlew.bat
