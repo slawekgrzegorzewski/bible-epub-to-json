@@ -1,6 +1,7 @@
 package pl.jwprogrammers.parser;
 
 import com.google.common.base.Charsets;
+import pl.jwprogrammers.exceptions.NonExistingEpubFileException;
 
 import java.io.FileInputStream;
 import java.io.IOException;
