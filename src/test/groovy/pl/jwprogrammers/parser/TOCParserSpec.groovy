@@ -1,6 +1,6 @@
 package pl.jwprogrammers.parser
 
-import pl.jwprogrammers.exceptions.InvalidTOCFormatException
+import pl.jwprogrammers.exceptions.InvalidFormatException
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -23,7 +23,7 @@ class TOCParserSpec extends Specification {
         instance.parse()
 
         then:
-        thrown InvalidTOCFormatException
+        thrown InvalidFormatException
     }
 
     @Unroll

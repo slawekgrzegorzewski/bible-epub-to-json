@@ -3,7 +3,7 @@ package pl.jwprogrammers.parser;
 import com.google.common.collect.Maps;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import pl.jwprogrammers.exceptions.InvalidTOCFormatException;
+import pl.jwprogrammers.exceptions.InvalidFormatException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +18,7 @@ public class TOCParser {
         this.toc = toc;
     }
 
-    public Map<String, String> parse() throws InvalidTOCFormatException {
+    public Map<String, String> parse() throws InvalidFormatException {
         HashMap<String, String> result = Maps.newHashMap();
         Document document = Jsoup.parse(toc);
         for (int i = 2; i < 68; i++) {
@@ -30,7 +30,7 @@ public class TOCParser {
                     .filter(Objects::nonNull)
                     .ifPresent(e -> result.put(e.attr("href"), e.text()));
         }
-        if (result.size() != 66) throw new InvalidTOCFormatException();
+        if (result.size() != 66) throw new InvalidFormatException("TOC");
         return result;
     }
 }
