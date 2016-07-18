@@ -12,12 +12,12 @@ public class ChapterNavigationParser {
     private final String content;
     private String book;
 
-    ChapterNavigationParser(String content) {
+    public ChapterNavigationParser(String content) {
         this.content = content;
     }
 
-    public Map<String, String> parse() {
-        Map<String, String> result = Maps.newHashMap();
+    public Map<Integer, String> parse() {
+        Map<Integer, String> result = Maps.newHashMap();
         Document document = Jsoup.parse(content);
         book = document.getElementsByTag("a").stream()
                 .filter(element -> element.attr("href").equals("biblebooknav.xhtml"))
@@ -27,7 +27,7 @@ public class ChapterNavigationParser {
                 .filter(element -> element.tag().getName().equals("td"))
                 .map(element -> element.getElementsByTag("a"))
                 .flatMap(Elements::stream)
-                .forEach(element -> result.put(element.text(), element.attr("href")));
+                .forEach(element -> result.put(Integer.parseInt(element.text()), element.attr("href")));
         return result;
     }
 

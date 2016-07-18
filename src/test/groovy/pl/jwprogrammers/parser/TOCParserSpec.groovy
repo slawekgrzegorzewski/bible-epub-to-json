@@ -12,7 +12,7 @@ import java.util.stream.Collectors
 class TOCParserSpec extends Specification {
 
     @Shared
-    Map<String, String> chapters = new TOCParser(Files.readAllLines(Paths.get("src/test/resources/toc.xhtml")).stream().collect(Collectors.joining("\r\n"))).parse()
+    Map<String, Book> chapters = new TOCParser(Files.readAllLines(Paths.get("src/test/resources/toc.xhtml")).stream().collect(Collectors.joining("\r\n"))).parse()
 
     def "toc in incorrect format"() {
 
@@ -41,71 +41,71 @@ class TOCParserSpec extends Specification {
 
         where:
         a                         | b
-        "biblechapternav1.xhtml"  | "Rodzaju"
-        "biblechapternav2.xhtml"  | "Wyjścia"
-        "biblechapternav3.xhtml"  | "Kapłańska"
-        "biblechapternav4.xhtml"  | "Liczb"
-        "biblechapternav5.xhtml"  | "Powtórzonego Prawa"
-        "biblechapternav6.xhtml"  | "Jozuego"
-        "biblechapternav7.xhtml"  | "Sędziów"
-        "biblechapternav8.xhtml"  | "Rut"
-        "biblechapternav9.xhtml"  | "1 Samuela"
-        "biblechapternav10.xhtml" | "2 Samuela"
-        "biblechapternav11.xhtml" | "1 Królów"
-        "biblechapternav12.xhtml" | "2 Królów"
-        "biblechapternav13.xhtml" | "1 Kronik"
-        "biblechapternav14.xhtml" | "2 Kronik"
-        "biblechapternav15.xhtml" | "Ezdrasza"
-        "biblechapternav16.xhtml" | "Nehemiasza"
-        "biblechapternav17.xhtml" | "Estery"
-        "biblechapternav18.xhtml" | "Hioba"
-        "biblechapternav19.xhtml" | "Psalmy"
-        "biblechapternav20.xhtml" | "Przysłów"
-        "biblechapternav21.xhtml" | "Kaznodziei"
-        "biblechapternav22.xhtml" | "Pieśń nad Pieśniami"
-        "biblechapternav23.xhtml" | "Izajasza"
-        "biblechapternav24.xhtml" | "Jeremiasza"
-        "biblechapternav25.xhtml" | "Lamentacje"
-        "biblechapternav26.xhtml" | "Ezechiela"
-        "biblechapternav27.xhtml" | "Daniela"
-        "biblechapternav28.xhtml" | "Ozeasza"
-        "biblechapternav29.xhtml" | "Joela"
-        "biblechapternav30.xhtml" | "Amosa"
-        "1001060432.xhtml"        | "Abdiasza"
-        "biblechapternav32.xhtml" | "Jonasza"
-        "biblechapternav33.xhtml" | "Micheasza"
-        "biblechapternav34.xhtml" | "Nahuma"
-        "biblechapternav35.xhtml" | "Habakuka"
-        "biblechapternav36.xhtml" | "Sofoniasza"
-        "biblechapternav37.xhtml" | "Aggeusza"
-        "biblechapternav38.xhtml" | "Zachariasza"
-        "biblechapternav39.xhtml" | "Malachiasza"
-        "biblechapternav40.xhtml" | "Mateusza"
-        "biblechapternav41.xhtml" | "Marka"
-        "biblechapternav42.xhtml" | "Łukasza"
-        "biblechapternav43.xhtml" | "Jana"
-        "biblechapternav44.xhtml" | "Dzieje Apostolskie"
-        "biblechapternav45.xhtml" | "Rzymian"
-        "biblechapternav46.xhtml" | "1 Koryntian"
-        "biblechapternav47.xhtml" | "2 Koryntian"
-        "biblechapternav48.xhtml" | "Galatów"
-        "biblechapternav49.xhtml" | "Efezjan"
-        "biblechapternav50.xhtml" | "Filipian"
-        "biblechapternav51.xhtml" | "Kolosan"
-        "biblechapternav52.xhtml" | "1 Tesaloniczan"
-        "biblechapternav53.xhtml" | "2 Tesaloniczan"
-        "biblechapternav54.xhtml" | "1 Tymoteusza"
-        "biblechapternav55.xhtml" | "2 Tymoteusza"
-        "biblechapternav56.xhtml" | "Tytusa"
-        "1001060458.xhtml"        | "Filemona"
-        "biblechapternav58.xhtml" | "Hebrajczyków"
-        "biblechapternav59.xhtml" | "Jakuba"
-        "biblechapternav60.xhtml" | "1 Piotra"
-        "biblechapternav61.xhtml" | "2 Piotra"
-        "biblechapternav62.xhtml" | "1 Jana"
-        "1001060464.xhtml"        | "2 Jana"
-        "1001060465.xhtml"        | "3 Jana"
-        "1001060466.xhtml"        | "Judy"
-        "biblechapternav66.xhtml" | "Objawienie"
+        "biblechapternav1.xhtml"  | Book.GENESIS
+        "biblechapternav2.xhtml"  | Book.EXODUS
+        "biblechapternav3.xhtml"  | Book.LEVITICUS
+        "biblechapternav4.xhtml"  | Book.NUMBERS
+        "biblechapternav5.xhtml"  | Book.DEUTERONOMY
+        "biblechapternav6.xhtml"  | Book.JOSHUA
+        "biblechapternav7.xhtml"  | Book.JUDGES
+        "biblechapternav8.xhtml"  | Book.RUTH
+        "biblechapternav9.xhtml"  | Book.FIRST_SAMUEL
+        "biblechapternav10.xhtml" | Book.SECOND_SAMUEL
+        "biblechapternav11.xhtml" | Book.FIRST_KINGS
+        "biblechapternav12.xhtml" | Book.SECOND_KINGS
+        "biblechapternav13.xhtml" | Book.FIRST_CHRONICLES
+        "biblechapternav14.xhtml" | Book.SECOND_CHRONICLES
+        "biblechapternav15.xhtml" | Book.EZRA
+        "biblechapternav16.xhtml" | Book.NEHEMIAH
+        "biblechapternav17.xhtml" | Book.ESTHER
+        "biblechapternav18.xhtml" | Book.JOB
+        "biblechapternav19.xhtml" | Book.PSALMS
+        "biblechapternav20.xhtml" | Book.PROVERBS
+        "biblechapternav21.xhtml" | Book.ECCLESIASTES
+        "biblechapternav22.xhtml" | Book.SONG_OF_SOLOMON
+        "biblechapternav23.xhtml" | Book.ISAIAH
+        "biblechapternav24.xhtml" | Book.JEREMIAH
+        "biblechapternav25.xhtml" | Book.LAMENTATIONS
+        "biblechapternav26.xhtml" | Book.EZEKIEL
+        "biblechapternav27.xhtml" | Book.DANIEL
+        "biblechapternav28.xhtml" | Book.HOSEA
+        "biblechapternav29.xhtml" | Book.JOEL
+        "biblechapternav30.xhtml" | Book.AMOS
+        "1001060432.xhtml"        | Book.OBADIAH
+        "biblechapternav32.xhtml" | Book.JONAH
+        "biblechapternav33.xhtml" | Book.MICAH
+        "biblechapternav34.xhtml" | Book.NAHUM
+        "biblechapternav35.xhtml" | Book.HABAKKUK
+        "biblechapternav36.xhtml" | Book.ZEPHANIAH
+        "biblechapternav37.xhtml" | Book.HAGGAI
+        "biblechapternav38.xhtml" | Book.ZECHARIAH
+        "biblechapternav39.xhtml" | Book.MALACHI
+        "biblechapternav40.xhtml" | Book.MATTHEW
+        "biblechapternav41.xhtml" | Book.MARK
+        "biblechapternav42.xhtml" | Book.LUKE
+        "biblechapternav43.xhtml" | Book.JOHN
+        "biblechapternav44.xhtml" | Book.ACTS
+        "biblechapternav45.xhtml" | Book.ROMANS
+        "biblechapternav46.xhtml" | Book.FIRST_CORINTHIANS
+        "biblechapternav47.xhtml" | Book.SECOND_CORINTHIANS
+        "biblechapternav48.xhtml" | Book.GALATIANS
+        "biblechapternav49.xhtml" | Book.EPHESIANS
+        "biblechapternav50.xhtml" | Book.PHILIPPIANS
+        "biblechapternav51.xhtml" | Book.COLOSSIANS
+        "biblechapternav52.xhtml" | Book.FIRST_THESSALONIANS
+        "biblechapternav53.xhtml" | Book.SECOND_THESSALONIANS
+        "biblechapternav54.xhtml" | Book.FIRST_TIMOTHY
+        "biblechapternav55.xhtml" | Book.SECOND_TIMOTHY
+        "biblechapternav56.xhtml" | Book.TITUS
+        "1001060458.xhtml"        | Book.PHILEMON
+        "biblechapternav58.xhtml" | Book.HEBREWS
+        "biblechapternav59.xhtml" | Book.JAMES
+        "biblechapternav60.xhtml" | Book.FIRST_PETER
+        "biblechapternav61.xhtml" | Book.SECOND_PETER
+        "biblechapternav62.xhtml" | Book.FIRST_JOHN
+        "1001060464.xhtml"        | Book.SECOND_JOHN
+        "1001060465.xhtml"        | Book.THIRD_JOHN
+        "1001060466.xhtml"        | Book.JUDE
+        "biblechapternav66.xhtml" | Book.REVELATION
     }
 }

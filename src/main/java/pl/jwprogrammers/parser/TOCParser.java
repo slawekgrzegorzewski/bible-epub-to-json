@@ -8,6 +8,7 @@ import pl.jwprogrammers.exceptions.InvalidFormatException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
 
@@ -18,8 +19,8 @@ public class TOCParser {
         this.toc = toc;
     }
 
-    public Map<String, String> parse() throws InvalidFormatException {
-        HashMap<String, String> result = Maps.newHashMap();
+    public Map<String, Book> parse() throws InvalidFormatException {
+        HashMap<String, Book> result = Maps.newHashMap();
         Document document = Jsoup.parse(toc);
         for (int i = 2; i < 68; i++) {
             ofNullable(document.getElementById("chapter" + i))
@@ -28,9 +29,13 @@ public class TOCParser {
                     .filter(e -> !e.isEmpty())
                     .map(e -> e.get(0))
                     .filter(Objects::nonNull)
-                    .ifPresent(e -> result.put(e.attr("href"), e.text()));
+                    .ifPresent(e -> result.put(e.attr("href"), getBook(e.text())));
         }
         if (result.size() != 66) throw new InvalidFormatException("TOC");
         return result;
+    }
+
+    private Book getBook(String bookName) {
+        return Stream.of(Book.values()).filter(b -> b.getPolishName().equals(bookName)).findAny().orElse(null);
     }
 }
