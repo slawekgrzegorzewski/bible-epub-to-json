@@ -3,7 +3,7 @@ package pl.jwprogrammers.parser;
 import com.google.common.collect.Maps;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import pl.jwprogrammers.exceptions.InvalidFormatException;
+import pl.jwprogrammers.bible.Book;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,15 +13,15 @@ import java.util.stream.Stream;
 import static java.util.Optional.ofNullable;
 
 public class TOCParser {
-    private final String toc;
+    private final String content;
 
-    public TOCParser(String toc) {
-        this.toc = toc;
+    public TOCParser(String content) {
+        this.content = content;
     }
 
-    public Map<String, Book> parse() throws InvalidFormatException {
-        HashMap<String, Book> result = Maps.newHashMap();
-        Document document = Jsoup.parse(toc);
+    public Map<Book, String> parse() {
+        HashMap<Book, String> result = Maps.newHashMap();
+        Document document = Jsoup.parse(content);
         for (int i = 2; i < 68; i++) {
             ofNullable(document.getElementById("chapter" + i))
                     .map(e -> e.getElementsByTag("a"))
@@ -29,13 +29,12 @@ public class TOCParser {
                     .filter(e -> !e.isEmpty())
                     .map(e -> e.get(0))
                     .filter(Objects::nonNull)
-                    .ifPresent(e -> result.put(e.attr("href"), getBook(e.text())));
+                    .ifPresent(e -> result.put(mapToBook(e.text()), e.attr("href")));
         }
-        if (result.size() != 66) throw new InvalidFormatException("TOC");
         return result;
     }
 
-    private Book getBook(String bookName) {
+    private Book mapToBook(String bookName) {
         return Stream.of(Book.values()).filter(b -> b.getPolishName().equals(bookName)).findAny().orElse(null);
     }
 }

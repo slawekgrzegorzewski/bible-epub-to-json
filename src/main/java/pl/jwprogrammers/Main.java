@@ -1,73 +1,50 @@
 package pl.jwprogrammers;
 
-import com.google.common.collect.Lists;
-import org.json.simple.JSONObject;
-import pl.jwprogrammers.exceptions.InvalidFormatException;
-import pl.jwprogrammers.exceptions.NonExistingEpubFileException;
-import pl.jwprogrammers.parser.*;
+import org.apache.commons.cli.*;
+import pl.jwprogrammers.parser.BibleParser;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Main {
-    public static void main(String[] args) throws NonExistingEpubFileException, InvalidFormatException, IOException {
-        JSONObject bibleObject = new JSONObject();
-//        JSONArray booksList = new JSONArray();
-//        bibleObject.put("verses", booksList);
+    public static void main(String[] args) throws IOException {
+        Options options = new Options();
 
-        EpubReader reader = new EpubReader(args[0]);
-        Map<String, Book> toc = new TOCParser(reader.getEntryContent("OEBPS/toc.xhtml")).parse();
-        List<ChapterNavigationParser> navigations = Lists.newArrayList();
-        toc.entrySet().stream()
-                .sorted(Comparator.comparing(entry -> entry.getValue().getOrder()))
-                .forEach(tocEntry -> {
-                    Book book = tocEntry.getValue();
-                    System.out.println("Księga: " + book);
-                    Map<Integer, String> chapters = null;
-                    try {
-                        chapters = new ChapterNavigationParser(reader.getEntryContent("OEBPS/" + tocEntry.getKey())).parse();
-                    } catch (NonExistingEpubFileException e) {
+        Option epubFileOption = Option.builder("f")
+                .longOpt("file")
+                .argName("file")
+                .required(true)
+                .hasArg(true)
+                .numberOfArgs(1)
+                .optionalArg(false)
+                .type(Path.class)
+                .desc("Path to bible in epub format")
+                .build();
+        Option outputFileOption = Option.builder("o")
+                .longOpt("output")
+                .argName("output")
+                .required(true)
+                .hasArg(true)
+                .numberOfArgs(1)
+                .optionalArg(false)
+                .type(Path.class)
+                .desc("Path to bible in epub format")
+                .build();
+        options.addOption(epubFileOption);
+        options.addOption(outputFileOption);
 
-                    }
-                    chapters.entrySet().stream()
-                            .sorted(Comparator.comparing(chapterEntry -> chapterEntry.getKey()))
-                            .forEach(chapterEntry -> {
-                                Integer chapter = chapterEntry.getKey();
-                                System.out.println("Rozdział: " + chapter);
-                                Map<Integer, String> verses = null;
-                                try {
-                                    verses = new ChapterContentParser(reader.getEntryContent("OEBPS/" + chapterEntry.getValue())).parse();
-                                } catch (NonExistingEpubFileException e) {
-
-                                }
-                                verses.entrySet().stream()
-                                        .sorted(Comparator.comparing(verseEntry -> verseEntry.getKey()))
-                                        .forEach(verseEntry -> {
-                                            Integer verseNumber = verseEntry.getKey();
-                                            String verseContent = verseEntry.getValue();
-                                            JSONObject bookObject = (JSONObject) bibleObject.get(book);
-                                            if (bookObject == null) {
-                                                bookObject = new JSONObject();
-                                                bibleObject.put(book, bookObject);
-                                            }
-                                            JSONObject chapterObject = (JSONObject) bookObject.get(chapter);
-                                            if (chapterObject == null) {
-                                                chapterObject = new JSONObject();
-                                                bookObject.put(chapter, chapterObject);
-                                            }
-                                            chapterObject.put(verseNumber, verseContent);
-                                        });
-                            });
-                });
-        try (FileWriter file = new FileWriter("c:\\test.json");) {
-            file.write(bibleObject.toJSONString());
-            file.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+        try {
+            CommandLine cmd = new DefaultParser().parse(options, args);
+            Path inputFile = Paths.get(cmd.getOptionValue("f"));
+            Path outputFile = Paths.get(cmd.getOptionValue("o"));
+            BibleParser parser = new BibleParser(inputFile);
+            parser.parse();
+            parser.save(outputFile);
+        } catch (ParseException e) {
+            new HelpFormatter().printHelp("bibleEpubToJSON", options);
         }
+
 
     }
 }

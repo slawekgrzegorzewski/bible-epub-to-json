@@ -1,6 +1,6 @@
 package pl.jwprogrammers.parser
 
-import pl.jwprogrammers.exceptions.NonExistingEpubFileException
+
 import spock.lang.Specification
 
 import java.nio.file.Files
@@ -9,18 +9,17 @@ import java.util.stream.Collectors
 
 public class EpubReaderSpec extends Specification {
 
-    def "not existing file"() throws NonExistingEpubFileException {
+    def "not existing file"() throws IOException {
         given:
-        EpubReader reader = new EpubReader("test/bi12_P.epub");
         when:
-        reader.getEntryContent("a");
+        new EpubReader(Paths.get("test/bi12_P.epub"));
         then:
-        thrown NonExistingEpubFileException
+        thrown IOException
     }
 
     def "existing file"() {
         given:
-        EpubReader reader = new EpubReader("src/test/resources/bi12_P.epub");
+        EpubReader reader = new EpubReader(Paths.get("src/test/resources/bi12_P.epub"));
         when:
         reader.getEntryContent("a");
         then:
@@ -29,7 +28,7 @@ public class EpubReaderSpec extends Specification {
 
     def "read entry"() {
         given:
-        EpubReader reader = new EpubReader("src/test/resources/bi12_P.epub");
+        EpubReader reader = new EpubReader(Paths.get("src/test/resources/bi12_P.epub"));
         String expectedContent = Files.readAllLines(Paths.get("src/test/resources/toc.xhtml")).stream().collect(Collectors.joining("\r\n"))
         expectedContent += "\r\n"
         when:

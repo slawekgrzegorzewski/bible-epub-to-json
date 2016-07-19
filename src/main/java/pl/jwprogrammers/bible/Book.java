@@ -1,4 +1,4 @@
-package pl.jwprogrammers.parser;
+package pl.jwprogrammers.bible;
 
 import com.google.common.collect.ImmutableList;
 

@@ -1,12 +1,12 @@
 package pl.jwprogrammers.parser;
 
-import com.google.common.collect.Maps;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ChapterNavigationParser {
     private final String content;
@@ -17,18 +17,19 @@ public class ChapterNavigationParser {
     }
 
     public Map<Integer, String> parse() {
-        Map<Integer, String> result = Maps.newHashMap();
         Document document = Jsoup.parse(content);
-        book = document.getElementsByTag("a").stream()
+        book = document
+                .getElementsByTag("a")
+                .stream()
                 .filter(element -> element.attr("href").equals("biblebooknav.xhtml"))
                 .map(Element::text)
-                .findFirst().orElse("");
-        document.getElementsByClass("w_navigation").stream()
+                .findFirst()
+                .orElse("");
+        return document.getElementsByClass("w_navigation").stream()
                 .filter(element -> element.tag().getName().equals("td"))
                 .map(element -> element.getElementsByTag("a"))
                 .flatMap(Elements::stream)
-                .forEach(element -> result.put(Integer.parseInt(element.text()), element.attr("href")));
-        return result;
+                .collect(Collectors.toMap(element -> Integer.parseInt(element.text()), element -> element.attr("href")));
     }
 
     public String getBook() {

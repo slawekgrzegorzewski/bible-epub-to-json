@@ -2,32 +2,36 @@ package pl.jwprogrammers.parser;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
-import pl.jwprogrammers.exceptions.NonExistingEpubFileException;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class EpubReader {
-    private final Path pathToFile;
+    private final Path file;
     private final Map<String, String> entriesContent = Maps.newHashMap();
 
-    public EpubReader(String pathToFile) {
-        this.pathToFile = Paths.get(pathToFile);
-    }
-
-    public String getEntryContent(String entryName) throws NonExistingEpubFileException {
+    public EpubReader(Path file) throws IOException {
+        this.file = file;
         unpack();
-        return entriesContent.get(entryName);
     }
 
-    private String readEntryToString(ZipInputStream zip, ZipEntry entry) throws IOException {
+    private void unpack() throws IOException {
+        try (ZipInputStream zip = new ZipInputStream(new FileInputStream(file.toFile()), Charsets.UTF_8)) {
+            ZipEntry entry;
+            while ((entry = zip.getNextEntry()) != null) {
+                entriesContent.put(entry.getName(), getEntryContent(zip, entry));
+            }
+        } catch (IOException e) {
+            entriesContent.clear();
+            throw e;
+        }
+    }
+
+    private String getEntryContent(ZipInputStream zip, ZipEntry entry) throws IOException {
         byte[] content = new byte[(int) entry.getSize()];
         byte b;
         int index = 0;
@@ -41,25 +45,7 @@ public class EpubReader {
         return new String(content, "UTF-8");
     }
 
-    private void unpack() throws NonExistingEpubFileException {
-        if (!entriesContent.isEmpty()) return;
-        validate();
-        try (InputStream input = new FileInputStream(pathToFile.toFile());
-             ZipInputStream zip = new ZipInputStream(input, Charsets.UTF_8)) {
-            ZipEntry entry;
-            do {
-                entry = zip.getNextEntry();
-                if (entry != null)
-                    entriesContent.put(entry.getName(), readEntryToString(zip, entry));
-            } while (entry != null);
-        } catch (IOException e) {
-            System.out.println("Unpacking file unsuccessful");
-            entriesContent.isEmpty();
-        }
-
-    }
-
-    private void validate() throws NonExistingEpubFileException {
-        if (!Files.exists(pathToFile)) throw new NonExistingEpubFileException();
+    public String getEntryContent(String entryName) {
+        return entriesContent.get(entryName);
     }
 }
