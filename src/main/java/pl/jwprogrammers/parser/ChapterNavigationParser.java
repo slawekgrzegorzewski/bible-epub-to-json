@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ChapterNavigationParser {
+    private static final String MAIN_FOLDER = "OEBPS/";
     private final String content;
     private String book;
 
@@ -29,7 +30,7 @@ public class ChapterNavigationParser {
                 .filter(element -> element.tag().getName().equals("td"))
                 .map(element -> element.getElementsByTag("a"))
                 .flatMap(Elements::stream)
-                .collect(Collectors.toMap(element -> Integer.parseInt(element.text()), element -> element.attr("href")));
+                .collect(Collectors.toMap(element -> Integer.parseInt(element.text()), element -> MAIN_FOLDER + element.attr("href")));
     }
 
     public String getBook() {

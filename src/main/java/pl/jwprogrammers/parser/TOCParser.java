@@ -8,11 +8,13 @@ import pl.jwprogrammers.bible.Book;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
 
 public class TOCParser {
+    private static final String MAIN_FOLDER = "OEBPS/";
     private final String content;
 
     public TOCParser(String content) {
@@ -29,12 +31,12 @@ public class TOCParser {
                     .filter(e -> !e.isEmpty())
                     .map(e -> e.get(0))
                     .filter(Objects::nonNull)
-                    .ifPresent(e -> result.put(mapToBook(e.text()), e.attr("href")));
+                    .ifPresent(e -> result.put(mapToBook(e.text()).orElse(null), MAIN_FOLDER + e.attr("href")));
         }
         return result;
     }
 
-    private Book mapToBook(String bookName) {
-        return Stream.of(Book.values()).filter(b -> b.getPolishName().equals(bookName)).findAny().orElse(null);
+    private Optional<Book> mapToBook(String bookName) {
+        return Stream.of(Book.values()).filter(b -> b.getPolishName().equals(bookName) || b.getEnglishName().equals(bookName)).findAny();
     }
 }

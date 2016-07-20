@@ -1,6 +1,6 @@
-package pl.jwprogrammers.parser
+package pl.jwprogrammers.epub
 
-
+import pl.jwprogrammers.epub.EpubReader
 import spock.lang.Specification
 
 import java.nio.file.Files

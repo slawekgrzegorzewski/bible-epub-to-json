@@ -2,6 +2,7 @@ package pl.jwprogrammers.parser;
 
 import org.json.simple.JSONObject;
 import pl.jwprogrammers.bible.Book;
+import pl.jwprogrammers.epub.EpubReader;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,7 +10,7 @@ import java.nio.file.Path;
 import java.util.Comparator;
 
 public class BibleParser {
-    private static final String MAIN_FOLDER = "OEBPS/";
+    public static final String EPUB_TOC_ENTRY_NAME = "OEBPS/toc.xhtml";
     private final JSONObject bibleObject = new JSONObject();
     private final EpubReader reader;
 
@@ -18,7 +19,7 @@ public class BibleParser {
     }
 
     public void parse() {
-        new TOCParser(reader.getEntryContent(MAIN_FOLDER + "toc.xhtml"))
+        new TOCParser(reader.getEntryContent(EPUB_TOC_ENTRY_NAME))
                 .parse()
                 .entrySet()
                 .stream()
@@ -27,7 +28,7 @@ public class BibleParser {
     }
 
     private void readBook(Book book, String bookNavigationFile) {
-        new ChapterNavigationParser(reader.getEntryContent(MAIN_FOLDER + bookNavigationFile))
+        new ChapterNavigationParser(reader.getEntryContent(bookNavigationFile))
                 .parse()
                 .entrySet()
                 .stream()
@@ -36,7 +37,7 @@ public class BibleParser {
     }
 
     private void readChapter(Book book, Integer chapter, String chapterContentFile) {
-        new ChapterContentParser(reader.getEntryContent(MAIN_FOLDER + chapterContentFile))
+        new ChapterContentParser(reader.getEntryContent(chapterContentFile))
                 .parse()
                 .entrySet()
                 .stream()
