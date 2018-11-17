@@ -5,9 +5,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import pl.jwprogrammers.bible.Book;
 
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -22,16 +22,17 @@ public class TOCParser {
     }
 
     public Map<Book, String> parse() {
+
         HashMap<Book, String> result = Maps.newHashMap();
         Document document = Jsoup.parse(content);
-        for (int i = 2; i < 68; i++) {
+        for (int i = 2; i < 1000; i++) {
             ofNullable(document.getElementById("chapter" + i))
                     .map(e -> e.getElementsByTag("a"))
-                    .filter(Objects::nonNull)
                     .filter(e -> !e.isEmpty())
                     .map(e -> e.get(0))
-                    .filter(Objects::nonNull)
-                    .ifPresent(e -> result.put(mapToBook(e.text()).orElse(null), MAIN_FOLDER + e.attr("href")));
+                    .map(e -> new AbstractMap.SimpleEntry<>(mapToBook(e.text()).orElse(null), MAIN_FOLDER + e.attr("href")))
+                    .filter(entry -> entry.getKey() != null)
+                    .ifPresent(entry -> result.put((entry.getKey()), entry.getValue()));
         }
         return result;
     }

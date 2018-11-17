@@ -8,9 +8,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.Map;
 
 public class BibleParser {
-    public static final String EPUB_TOC_ENTRY_NAME = "OEBPS/toc.xhtml";
+    private static final String EPUB_TOC_ENTRY_NAME = "OEBPS/toc.xhtml";
     private final JSONObject bibleObject = new JSONObject();
     private final EpubReader reader;
 
@@ -32,7 +33,7 @@ public class BibleParser {
                 .parse()
                 .entrySet()
                 .stream()
-                .sorted(Comparator.comparing(chapterEntry -> chapterEntry.getKey()))
+                .sorted(Comparator.comparing(Map.Entry::getKey))
                 .forEach(chapterEntry -> readChapter(book, chapterEntry.getKey(), chapterEntry.getValue()));
     }
 
@@ -41,7 +42,7 @@ public class BibleParser {
                 .parse()
                 .entrySet()
                 .stream()
-                .sorted(Comparator.comparing(verseEntry -> verseEntry.getKey()))
+                .sorted(Comparator.comparing(Map.Entry::getKey))
                 .forEach(verseEntry -> addToJSON(book, chapter, verseEntry.getKey(), verseEntry.getValue()));
     }
 
