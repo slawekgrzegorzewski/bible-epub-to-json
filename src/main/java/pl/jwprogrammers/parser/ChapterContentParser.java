@@ -33,11 +33,19 @@ public class ChapterContentParser {
         return verses
                 .entrySet()
                 .stream()
-                .collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue().stream().collect(Collectors.joining(" "))));
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> String.join(" ", entry.getValue())));
     }
 
     private boolean isParagraphWithVerse(Element element) {
-        return !element.classNames().contains("w_navigation");
+        return !isNavigation(element) && !isFootnoteRef(element);
+    }
+
+    private boolean isNavigation(Element element) {
+        return !element.getElementsByClass("w_navigation").isEmpty();
+    }
+
+    private boolean isFootnoteRef(Element element) {
+        return !element.getElementsByClass("footnoteref").isEmpty();
     }
 
     private void readParagraph(Element paragraph) {

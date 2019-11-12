@@ -4,8 +4,8 @@ import org.json.simple.JSONObject;
 import pl.jwprogrammers.bible.Book;
 import pl.jwprogrammers.epub.EpubReader;
 
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Map;
@@ -61,9 +61,8 @@ public class BibleParser {
     }
 
     public void save(Path outputFile) {
-        try (FileWriter file = new FileWriter(outputFile.toFile())) {
-            file.write(bibleObject.toJSONString());
-            file.flush();
+        try {
+            Files.writeString(outputFile, bibleObject.toJSONString());
         } catch (IOException e) {
             e.printStackTrace();
         }
